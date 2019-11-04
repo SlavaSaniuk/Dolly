@@ -90,7 +90,7 @@ public class DEConverter {
                     entity_field.setAccessible(true);
                     dto_field.setAccessible(true);
                     try {
-                        dto_field.set(dto, entity_field.get(ent));
+                        entity_field.set(ent, dto_field.get(dto));
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
