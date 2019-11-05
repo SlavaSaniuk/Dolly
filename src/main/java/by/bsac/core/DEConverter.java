@@ -4,6 +4,8 @@ import by.bsac.annotations.Dto;
 import by.bsac.core.utils.FieldsUtils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DTO Entity Converter class can convert entity to DTO objects and otherwise.
@@ -30,28 +32,15 @@ public class DEConverter {
             throw new IllegalArgumentException(String.format(NOT_SUPPORTED_MSG,
                     dto.getClass().getCanonicalName(), ent.getClass().getCanonicalName()));
 
-        //Try to map entity fields to DTO fields
-        final Field[] entity_fields = ent.getClass().getDeclaredFields();
-        final Field[] dto_fields = dto.getClass().getDeclaredFields();
-
-        //Iterate all entity fields
-        for (Field entity_field : entity_fields) {
-
-            //Iterate all DTO fields in each entity fields iteration round
-            for (Field dto_field : dto_fields) {
-
-                //  If entity and dto fields type and name are same
-                //  Try to map entity field value to DTO field
-                if (FieldsUtils.compareFields(entity_field, dto_field)) {
-                    entity_field.setAccessible(true);
-                    dto_field.setAccessible(true);
-                    try {
-                        dto_field.set(dto, entity_field.get(ent));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+        //Iterate all related fields
+        for (Map.Entry<Field, Field> entry :
+                relatedFields(ent.getClass().getDeclaredFields(), dto.getClass().getDeclaredFields()).entrySet()) {
+            entry.getKey().setAccessible(true);
+            entry.getValue().setAccessible(true);
+            try {
+                entry.getValue().set(dto, entry.getKey().get(ent));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
 
@@ -74,28 +63,15 @@ public class DEConverter {
             throw new IllegalArgumentException(String.format(NOT_SUPPORTED_MSG,
                     dto.getClass().getCanonicalName(), ent.getClass().getCanonicalName()));
 
-        //Try to map entity fields to DTO fields
-        final Field[] dto_fields = dto.getClass().getDeclaredFields();
-        final Field[] entity_fields = ent.getClass().getDeclaredFields();
-
-        //Iterate all entity fields
-        for (Field entity_field : entity_fields) {
-
-            //Iterate all DTO fields in each entity fields iteration round
-            for (Field dto_field : dto_fields) {
-
-                //  If entity and dto fields type and name are same
-                //  Try to map entity field value to DTO field
-                if (FieldsUtils.compareFields(entity_field, dto_field)) {
-                    entity_field.setAccessible(true);
-                    dto_field.setAccessible(true);
-                    try {
-                        entity_field.set(ent, dto_field.get(dto));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+        //Iterate all related fields
+        for (Map.Entry<Field, Field> entry :
+                relatedFields(ent.getClass().getDeclaredFields(), dto.getClass().getDeclaredFields()).entrySet()) {
+            entry.getKey().setAccessible(true);
+            entry.getValue().setAccessible(true);
+            try {
+                entry.getKey().set(ent, entry.getValue().get(dto));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
 
@@ -121,5 +97,54 @@ public class DEConverter {
             if (supported == ent.getClass()) return true;
 
          return false;
+    }
+
+    /**
+     * Method return map of related fields ( related means
+     * that entity and dto field has a same name and type),
+     * where map key is entity field and map value is his related dto field.
+     * @param entity_fields - Array of {@link Field} entity fields.
+     * @param dto_fields - Array of {@link Field} DTO fields.
+     * @return - {@link Map} of related fields.
+     */
+    private static Map<Field, Field> relatedFields(Field[] entity_fields, Field[] dto_fields) {
+
+        Map<Field, Field> related_fields = new HashMap<>();
+
+        //Iterate all entity fields
+        for (Field entity_field : entity_fields) {
+            //Iterate all DTO fields in each entity fields iteration round
+            for (Field dto_field : dto_fields) {
+                //  If entity and dto fields type and name are same
+                //  Try to map entity field value to DTO field
+                if (FieldsUtils.compareFields(entity_field, dto_field))
+                    related_fields.put(entity_field, dto_field);
+            }
+        }
+
+        return related_fields;
+    }
+
+    private static Map<Field, Field> relatedFieldsWithAnnotation(Field[] entity_fields, Field[] dto_fields) {
+
+        final Map<Field, Field> related_fields = new HashMap<>();
+
+        //Iterate all entity fields
+        for (Field entity_field : entity_fields) {
+            //Iterate all DTO fields in each entity fields iteration round
+            for (Field dto_field : dto_fields) {
+                //  If entity and dto fields type and DtoProperty annotation value are same
+                //  Try to map entity field value to DTO field
+
+
+
+                related_fields.put(entity_field, dto_field);
+
+
+            }
+        }
+
+        related_fields.putAll(relatedFields(entity_fields, dto_fields));
+        return related_fields;
     }
 }
