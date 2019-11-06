@@ -1,11 +1,9 @@
 package by.bsac.core;
 
 import by.bsac.annotations.Dto;
-import by.bsac.core.utils.FieldsUtils;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * DTO Entity Converter class can convert entity to DTO objects and otherwise.
@@ -32,9 +30,10 @@ public class DEConverter {
             throw new IllegalArgumentException(String.format(NOT_SUPPORTED_MSG,
                     dto.getClass().getCanonicalName(), ent.getClass().getCanonicalName()));
 
-        //Iterate all related fields
-        for (Map.Entry<Field, Field> entry :
-                relatedFields(ent.getClass().getDeclaredFields(), dto.getClass().getDeclaredFields()).entrySet()) {
+        Map<Field, Field> related = ConverterUtilz.getRelatedFieldsByAnnotation(ent.getClass(), dto.getClass());
+        related.putAll(ConverterUtilz.getRelatedFieldsByName(ent.getClass(), dto.getClass())); ;
+
+        for (Map.Entry<Field, Field> entry : related.entrySet()) {
             entry.getKey().setAccessible(true);
             entry.getValue().setAccessible(true);
             try {
@@ -44,8 +43,7 @@ public class DEConverter {
             }
         }
 
-        //Return DTO object with field established from entity object
-       return dto;
+        return dto;
     }
 
     /**
@@ -63,9 +61,10 @@ public class DEConverter {
             throw new IllegalArgumentException(String.format(NOT_SUPPORTED_MSG,
                     dto.getClass().getCanonicalName(), ent.getClass().getCanonicalName()));
 
-        //Iterate all related fields
-        for (Map.Entry<Field, Field> entry :
-                relatedFields(ent.getClass().getDeclaredFields(), dto.getClass().getDeclaredFields()).entrySet()) {
+        Map<Field, Field> related = ConverterUtilz.getRelatedFieldsByAnnotation(ent.getClass(), dto.getClass());
+        related.putAll(ConverterUtilz.getRelatedFieldsByName(ent.getClass(), dto.getClass())); ;
+
+        for (Map.Entry<Field, Field> entry : related.entrySet()) {
             entry.getKey().setAccessible(true);
             entry.getValue().setAccessible(true);
             try {
@@ -75,7 +74,6 @@ public class DEConverter {
             }
         }
 
-        //Return entity object with field established from DTO object
         return ent;
     }
 
@@ -99,52 +97,4 @@ public class DEConverter {
          return false;
     }
 
-    /**
-     * Method return map of related fields ( related means
-     * that entity and dto field has a same name and type),
-     * where map key is entity field and map value is his related dto field.
-     * @param entity_fields - Array of {@link Field} entity fields.
-     * @param dto_fields - Array of {@link Field} DTO fields.
-     * @return - {@link Map} of related fields.
-     */
-    private static Map<Field, Field> relatedFields(Field[] entity_fields, Field[] dto_fields) {
-
-        Map<Field, Field> related_fields = new HashMap<>();
-
-        //Iterate all entity fields
-        for (Field entity_field : entity_fields) {
-            //Iterate all DTO fields in each entity fields iteration round
-            for (Field dto_field : dto_fields) {
-                //  If entity and dto fields type and name are same
-                //  Try to map entity field value to DTO field
-                if (FieldsUtils.compareFields(entity_field, dto_field))
-                    related_fields.put(entity_field, dto_field);
-            }
-        }
-
-        return related_fields;
-    }
-
-    private static Map<Field, Field> relatedFieldsWithAnnotation(Field[] entity_fields, Field[] dto_fields) {
-
-        final Map<Field, Field> related_fields = new HashMap<>();
-
-        //Iterate all entity fields
-        for (Field entity_field : entity_fields) {
-            //Iterate all DTO fields in each entity fields iteration round
-            for (Field dto_field : dto_fields) {
-                //  If entity and dto fields type and DtoProperty annotation value are same
-                //  Try to map entity field value to DTO field
-
-
-
-                related_fields.put(entity_field, dto_field);
-
-
-            }
-        }
-
-        related_fields.putAll(relatedFields(entity_fields, dto_fields));
-        return related_fields;
-    }
 }
