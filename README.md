@@ -31,4 +31,22 @@ Examples:
   BookAndAuthor dto = DEConverter.toDto(book, new BookAndAuthor());
   dto = DEConverte.toDto(author, dto);
   
-    3. Now dto object contains properties from book and author objects.
+   3. Now dto object contains properties from book and author objects.
+
+@DtoProperty annotation 
+
+   In case when you DTO object has field with name not same as related entity field, yoc can annotate this field with @DtoProperty annotation and set entityProperty annotation property with value of related entity field name.
+   
+public class Author {
+    
+   private String author_name;
+}
+
+@Dto({Book.class, Author.class})
+public class BookAndAuthor { 
+  
+   @DtoProperty(entityProperty = "author_name")
+   private String author;
+}
+
+
