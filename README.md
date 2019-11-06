@@ -23,11 +23,13 @@ Examples:
    2. Use DEConverter to convert entities to dto:
   
   `Book book = new Book();`  
-   //Set properties of book object
-   ...
+   //Set properties of book object  
+   ...  
+   
   `Author author = new Author();`  
-    //Set properties of author object
-    ...
+    //Set properties of author object  
+    ...  
+    
  ` BookAndAuthor dto = DEConverter.toDto(book, new BookAndAuthor());  
   dto = DEConverte.toDto(author, dto);`  
   
