@@ -6,7 +6,7 @@
 
     <groupId>by.bsac</groupId>
     <artifactId>dolly</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
