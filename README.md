@@ -17,36 +17,36 @@ Examples:
    1) Convert to DTO
    1. Annotate BookAndAuthor dto class with @Dto annotation.
    
-  @Dto({Book.class, Author.class})
-  public class BookAndAuthor { ... }
+  **@Dto({Book.class, Author.class})**  
+  `public class BookAndAuthor { ... }`
    
    2. Use DEConverter to convert entities to dto:
   
-  Book book = new Book();
+  `Book book = new Book();`  
    //Set properties of book object
    ...
-  Author author = new Author();
+  `Author author = new Author();`  
     //Set properties of author object
     ...
-  BookAndAuthor dto = DEConverter.toDto(book, new BookAndAuthor());
-  dto = DEConverte.toDto(author, dto);
+ ` BookAndAuthor dto = DEConverter.toDto(book, new BookAndAuthor());  
+  dto = DEConverte.toDto(author, dto);`  
   
    3. Now dto object contains properties from book and author objects.
 
-@DtoProperty annotation 
+## @DtoProperty annotation 
 
    In case when you DTO object has field with name not same as related entity field, yoc can annotate this field with @DtoProperty annotation and set entityProperty annotation property with value of related entity field name.
    
-public class Author {
+`public class Author {
     
    private String author_name;
-}
+}`
 
-@Dto({Book.class, Author.class})
+`@Dto({Book.class, Author.class})  
 public class BookAndAuthor { 
   
-   @DtoProperty(entityProperty = "author_name")
+   **@DtoProperty(entityProperty = "author_name")**  
    private String author;
-}
+}`
 
 
