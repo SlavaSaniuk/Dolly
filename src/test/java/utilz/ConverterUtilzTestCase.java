@@ -50,4 +50,22 @@ class ConverterUtilzTestCase {
         }
     }
 
+    @Test
+    void setRelatedFields_ObjectWithValues_shouldReturnOtherObjectWithSameValues() throws IllegalAccessException {
+
+        Map<Field, Field> related = ConverterUtilz.getRelatedFields(Book.class, BookDto.class);
+
+        Book book = new Book();
+        book.setBookId(24);
+        book.setBookTitle("The Great Gatsby");
+
+        BookDto dto = new BookDto();
+
+        ConverterUtilz.setRelatedFields(book, dto, related);
+
+        Assertions.assertEquals(book.getBookId(), dto.getId());
+        Assertions.assertEquals(book.getBookTitle(), dto.getBookTitle());
+
+    }
+
 }

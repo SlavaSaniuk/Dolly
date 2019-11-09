@@ -11,4 +11,19 @@ public class BookDto {
 
     private String book_title;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getBookTitle() {
+        return book_title;
+    }
+
+    public void setBookTitle(String book_title) {
+        this.book_title = book_title;
+    }
 }

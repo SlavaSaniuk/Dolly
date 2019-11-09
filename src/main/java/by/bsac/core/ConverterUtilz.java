@@ -92,5 +92,31 @@ public class ConverterUtilz {
         return related;
     }
 
+    /**
+     * Set related fields values from one object to other object.
+     * Note: {@link Map} of related fields must contains fields of "from" object as map keys,
+     * and fields of "to" object as map values.
+     * @param from - {@link Object} from gets values.
+     * @param to - {@link Object} to sets values.
+     * @param related_fields - {@link Map} of related fields. Map must contains fields of "from" object as map keys,
+     * and fields of "to" object as map values.
+     * @throws IllegalAccessException - {@link IllegalAccessException}.
+     */
+    public static void setRelatedFields(Object from, Object to, Map<Field, Field> related_fields) throws IllegalAccessException {
+
+        for (Map.Entry<Field, Field> entry : related_fields.entrySet()) {
+            entry.getKey().setAccessible(true);
+            entry.getValue().setAccessible(true);
+            entry.getValue().set(to, entry.getKey().get(from));
+            setField(entry.getKey(), entry.getValue(), from, to);
+        }
+
+    }
+
+    private static void setField(Field f_from, Field f_to, Object o_from, Object o_to) throws IllegalAccessException {
+        f_from.setAccessible(true);
+        f_to.setAccessible(true);
+        f_to.set(o_to, f_from.get(o_from));
+    }
 
 }
