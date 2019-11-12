@@ -81,6 +81,11 @@ public class ConverterUtilz {
         Set<Field> entity_fields = new HashSet<>(Arrays.asList(e_class.getDeclaredFields()));
         Set<Field> dto_fields = new HashSet<>(Arrays.asList(d_class.getDeclaredFields()));
 
+        return relatedFields(entity_fields, dto_fields);
+    }
+
+    private static Map<Field, Field> relatedFields(Set<Field> entity_fields, Set<Field> dto_fields) {
+
         //related by annotations
         Map<Field, Field> related = relatedByAnnotations(entity_fields, dto_fields);
         entity_fields.removeAll(related.keySet());
@@ -90,6 +95,7 @@ public class ConverterUtilz {
         related.putAll(relatedByName(entity_fields, dto_fields));
 
         return related;
+
     }
 
     /**

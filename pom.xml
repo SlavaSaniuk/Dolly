@@ -6,7 +6,7 @@
 
     <groupId>by.bsac</groupId>
     <artifactId>dolly</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
@@ -21,6 +21,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.5.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>custom</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

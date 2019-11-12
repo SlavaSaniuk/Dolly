@@ -72,7 +72,8 @@ public class BasicDtoEntityConverter<D> implements DtoEntityConverter<D> {
         return dto;
     }
 
-    private void isSupported(Class entity_class) throws NoSupportedEntityException {
+
+    public void isSupported(Class entity_class) throws NoSupportedEntityException {
 
        if (related_fields.keySet().stream().noneMatch(x -> x == entity_class))
             throw new NoSupportedEntityException(entity_class, this.dto_class);
