@@ -16,4 +16,8 @@ public class DriverDto {
     @DtoEmbedded(value = DriverName.class)
     private String f_name;
 
+    @DtoEmbedded(value = DriverName.class)
+    @DtoProperty(entityProperty = "l_name")
+    private String surname;
+
 }

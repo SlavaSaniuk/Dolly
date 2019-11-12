@@ -84,7 +84,7 @@ public class ConverterUtilz {
         return relatedFields(entity_fields, dto_fields);
     }
 
-    private static Map<Field, Field> relatedFields(Set<Field> entity_fields, Set<Field> dto_fields) {
+    public static Map<Field, Field> relatedFields(Set<Field> entity_fields, Set<Field> dto_fields) {
 
         //related by annotations
         Map<Field, Field> related = relatedByAnnotations(entity_fields, dto_fields);
