@@ -6,6 +6,7 @@
 
     <groupId>by.bsac</groupId>
     <artifactId>dolly</artifactId>
+    <packaging>pom</packaging>
     <version>2.1</version>
 
     <dependencies>

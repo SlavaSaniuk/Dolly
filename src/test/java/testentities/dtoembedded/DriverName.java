@@ -1,12 +1,12 @@
 package testentities.dtoembedded;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 //Embedded entity object
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class DriverName {
 
     private String f_name;

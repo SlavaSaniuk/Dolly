@@ -1,7 +1,11 @@
 package by.bsac.core.beans;
 
 import by.bsac.annotations.DtoEmbedded;
+import by.bsac.collections.MapUtils;
+import by.bsac.collections.SetUtils;
 import by.bsac.core.ConverterUtilz;
+import by.bsac.core.exceptions.NoDtoClassException;
+import by.bsac.core.exceptions.NoSupportedEntitiesException;
 import by.bsac.core.utils.FieldsUtils;
 import lombok.Getter;
 
@@ -9,16 +13,25 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
-public class EmbeddedDeConverter<D> implements DtoEntityConverter<D> {
+public class EmbeddedDeConverter<D> extends BasicDtoEntityConverter<D> {
 
     //Class variables
+    @Getter
     private Map<Class, Map<Field, Field>> related_embedded_fields;
 
-    public EmbeddedDeConverter(Class<D> dto_clazz) {
+    public EmbeddedDeConverter(Class<D> dto_clazz) throws NoSupportedEntitiesException, NoDtoClassException {
+        super(dto_clazz);
 
         Set<Field> embedded_dto_fields = FieldsUtils.getAnnotatedFields(DtoEmbedded.class, dto_clazz);
         Map<Class, Set<Field>> embedded_dto_objects = new HashMap<>();
+
+        //Update related fields (super class)
+        //Remove all fields annotated with @DtoEmbedded from DTO class
+        Set<Field> dto_fields = SetUtils.asSet(dto_clazz.getDeclaredFields());
+        dto_fields.removeAll(embedded_dto_fields);
+        Map<Class, Map<Field, Field>> for_update = Arrays.stream(super.supported_classes).collect(
+                Collectors.toMap(x -> x, x -> ConverterUtilz.relatedFields(SetUtils.asSet(x.getDeclaredFields()), dto_fields)));
+        super.updateRelatedFields(for_update);
 
         for (Field emb_field : embedded_dto_fields) {
             Class target_ent = emb_field.getAnnotation(DtoEmbedded.class).value();
@@ -36,39 +49,67 @@ public class EmbeddedDeConverter<D> implements DtoEntityConverter<D> {
         }
 
         this.related_embedded_fields = related_emb_fields;
+    }
 
+    public <T> T toEntity(D dto, T entity, Object... emb) {
+
+        final T ent =  super.toEntity(dto, entity);
+
+        Arrays.stream(emb).forEach( em -> {
+
+            if (this.related_embedded_fields.containsKey(em.getClass())) {
+
+                Map<Field, Field> inv = MapUtils.invertMap(this.related_embedded_fields.get(em.getClass()));
+
+                try {
+                    ConverterUtilz.setRelatedFields(dto, em, inv);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                Field emb_field = FieldsUtils.getFieldsByType(ent.getClass(), em.getClass())[0];
+
+                emb_field.setAccessible(true);
+                try {
+                    emb_field.set(ent, em);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
+        return ent;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Override
-    public <T> T toEntity(D dto, T entity) {
-        return null;
-    }
-
-    @Override
     public <T> D toDto(T entity, D dto) {
-        return null;
+
+        dto = super.toDto(entity, dto);
+
+        Set<Object> entity_emb_objs = new HashSet<>();
+
+        SetUtils.asSet(entity.getClass().getDeclaredFields()).stream()
+                .filter(f -> this.related_embedded_fields.containsKey(f.getType())).forEach(x -> {
+                    x.setAccessible(true);
+                    try {
+                        entity_emb_objs.add(x.get(entity));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+        });
+
+        for (Object emb : entity_emb_objs) {
+
+            Map<Field, Field> related_emb = this.related_embedded_fields.get(emb.getClass());
+            try {
+                ConverterUtilz.setRelatedFields(emb, dto, related_emb);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return dto;
     }
 }

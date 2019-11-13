@@ -5,6 +5,7 @@ import by.bsac.core.ConverterUtilz;
 import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
 import by.bsac.core.exceptions.NoSupportedEntityException;
+import lombok.Getter;
 
 
 import java.lang.reflect.Field;
@@ -16,17 +17,21 @@ import java.util.stream.Collectors;
 public class BasicDtoEntityConverter<D> implements DtoEntityConverter<D> {
 
     //Class variables
-    private final Map<Class, Map<Field, Field>> related_fields = new HashMap<>();
-    private Class<D> dto_class;
+    private Class<D> dto_class; //DTO class
+    protected Class[] supported_classes; //Array of supported entity classes
+    //Map of related fields between entity and DTO classes
+    private Map<Class, Map<Field, Field>> related_fields = new HashMap<>(); //Key - entity class, value - related fields between entity and DTO classes
 
     public BasicDtoEntityConverter(Class<D> dto_clazz) throws NoDtoClassException, NoSupportedEntitiesException {
 
+        //Exception thrown if given DTO class not annotated with @Dto annotation
         Dto annotation = dto_clazz.getAnnotation(Dto.class);
         if (annotation == null) throw new NoDtoClassException(dto_clazz);
 
         //Get supported classes
         Class[] supported_classes = annotation.value();
         if (supported_classes.length == 0) throw new NoSupportedEntitiesException(dto_clazz);
+        this.supported_classes = supported_classes;
 
         Arrays.stream(supported_classes).forEach(x -> this.related_fields.put(x, ConverterUtilz.getRelatedFields(x, dto_clazz)));
 
@@ -73,9 +78,14 @@ public class BasicDtoEntityConverter<D> implements DtoEntityConverter<D> {
     }
 
 
-    public void isSupported(Class entity_class) throws NoSupportedEntityException {
+    private void isSupported(Class entity_class) throws NoSupportedEntityException {
 
        if (related_fields.keySet().stream().noneMatch(x -> x == entity_class))
             throw new NoSupportedEntityException(entity_class, this.dto_class);
     }
+
+    protected void updateRelatedFields(Map<Class, Map<Field, Field>> new_related) {
+        this.related_fields = new_related;
+    }
+
 }
