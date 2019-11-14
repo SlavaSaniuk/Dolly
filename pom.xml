@@ -6,7 +6,7 @@
 
     <groupId>by.bsac</groupId>
     <artifactId>dolly</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>2.1</version>
 
     <dependencies>
@@ -29,6 +29,11 @@
             <artifactId>lombok</artifactId>
             <version>custom</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>by.bsac</groupId>
+            <artifactId>uerejareo</artifactId>
+            <version>0.1</version>
         </dependency>
     </dependencies>
 
