@@ -1,6 +1,7 @@
 package by.bsac.core.beans;
 
 import by.bsac.annotations.Dto;
+import by.bsac.collections.SetUtils;
 import by.bsac.core.ConverterUtilz;
 import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
@@ -83,6 +84,7 @@ public class BasicDtoEntityConverter<D> implements DtoEntityConverter<D> {
        if (related_fields.keySet().stream().noneMatch(x -> x == entity_class))
             throw new NoSupportedEntityException(entity_class, this.dto_class);
     }
+
 
     protected void updateRelatedFields(Map<Class, Map<Field, Field>> new_related) {
         this.related_fields = new_related;

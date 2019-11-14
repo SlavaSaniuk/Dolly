@@ -6,6 +6,7 @@ import by.bsac.collections.SetUtils;
 import by.bsac.core.ConverterUtilz;
 import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
+import by.bsac.core.exceptions.NoSupportedEntityException;
 import by.bsac.core.utils.FieldsUtils;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EmbeddedDeConverter<D> extends BasicDtoEntityConverter<D> {
+public class EmbeddedDeConverter<D> extends BasicDtoEntityConverter<D> implements EmbeddedDtoEntityConverter<D> {
 
     //Class variables
     @Getter
@@ -51,6 +52,7 @@ public class EmbeddedDeConverter<D> extends BasicDtoEntityConverter<D> {
         this.related_embedded_fields = related_emb_fields;
     }
 
+    @Override
     public <T> T toEntity(D dto, T entity, Object... emb) {
 
         final T ent =  super.toEntity(dto, entity);
