@@ -1,6 +1,6 @@
 package core;
 
-import by.bsac.core.beans.EmbeddedDeConverter;
+import by.bsac.core.beans.EmbeddedDtoEntityConverter;
 import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
 import org.junit.jupiter.api.Assertions;
@@ -13,13 +13,13 @@ import testentities.dtoembedded.DriverName;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-class EmbeddedDeConverterTestCase {
+class EmbeddedDtoEntityConverterTestCase {
 
     @Test
     @Disabled
     void embeddedDeConverter_embeddedFields_shouldCreateMapOfRelatedFields() throws NoSupportedEntitiesException, NoDtoClassException {
 
-        EmbeddedDeConverter<DriverDto> converter = new EmbeddedDeConverter<>(DriverDto.class);
+        EmbeddedDtoEntityConverter<DriverDto> converter = new EmbeddedDtoEntityConverter<>(DriverDto.class);
 
         Map<Class, Map<Field, Field>> related_emb_fields = converter.getRelatedEmbeddedFields();
         Assertions.assertEquals(1, related_emb_fields.size());
@@ -33,7 +33,7 @@ class EmbeddedDeConverterTestCase {
     @Test
     void toEntity_dtoWithOneEmbeddedField_shouldReturnEntity() throws NoSupportedEntitiesException, NoDtoClassException {
 
-        EmbeddedDeConverter<DriverDto> converter = new EmbeddedDeConverter<>(DriverDto.class);
+        EmbeddedDtoEntityConverter<DriverDto> converter = new EmbeddedDtoEntityConverter<>(DriverDto.class);
 
         DriverDto dto = new DriverDto();
         dto.setId(24);
@@ -53,7 +53,7 @@ class EmbeddedDeConverterTestCase {
     @Test
     void toDto_entityWithEmbeddedField_shouldReturnEntity() throws NoSupportedEntitiesException, NoDtoClassException {
 
-        EmbeddedDeConverter<DriverDto> converter = new EmbeddedDeConverter<>(DriverDto.class);
+        EmbeddedDtoEntityConverter<DriverDto> converter = new EmbeddedDtoEntityConverter<>(DriverDto.class);
 
         Driver ent = new Driver();
         ent.setDriverExperience(8);

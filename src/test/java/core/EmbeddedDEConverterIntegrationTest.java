@@ -1,7 +1,7 @@
 package core;
 
-import by.bsac.core.beans.EmbeddedDeConverter;
 import by.bsac.core.beans.EmbeddedDtoEntityConverter;
+import by.bsac.core.beans.EmbeddedDeConverter;
 import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
 import by.bsac.core.exceptions.NoSupportedEntityException;
@@ -12,11 +12,11 @@ import testentities.dtoembedded.*;
 
 class EmbeddedDEConverterIntegrationTest {
 
-    private EmbeddedDtoEntityConverter<DriverWithCarDto> CONVERTER;
+    private EmbeddedDeConverter<DriverWithCarDto> CONVERTER;
 
     @BeforeEach
     void setUp() throws NoSupportedEntitiesException, NoDtoClassException {
-        this.CONVERTER = new EmbeddedDeConverter<>(DriverWithCarDto.class);
+        this.CONVERTER = new EmbeddedDtoEntityConverter<>(DriverWithCarDto.class);
     }
 
     @Test
@@ -85,7 +85,7 @@ class EmbeddedDEConverterIntegrationTest {
     @Test
     void embeddedDtoEntityConverter_noDtoAnnotations_shouldThrowNoDtoClassException() {
 
-        Assertions.assertThrows(NoDtoClassException.class, () -> new EmbeddedDeConverter<>(Driver.class));
+        Assertions.assertThrows(NoDtoClassException.class, () -> new EmbeddedDtoEntityConverter<>(Driver.class));
 
     }
 
