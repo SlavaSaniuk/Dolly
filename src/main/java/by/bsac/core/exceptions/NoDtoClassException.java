@@ -1,5 +1,6 @@
 package by.bsac.core.exceptions;
 
+@Deprecated
 public class NoDtoClassException extends DollyException {
 
     public NoDtoClassException(Class dto_clazz) {

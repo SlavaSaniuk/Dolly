@@ -5,7 +5,6 @@ import by.bsac.annotations.DtoEmbedded;
 import by.bsac.collections.MapUtils;
 import by.bsac.collections.SetUtils;
 import by.bsac.core.ConverterUtilz;
-import by.bsac.core.exceptions.NoDtoClassException;
 import by.bsac.core.exceptions.NoSupportedEntitiesException;
 import by.bsac.core.utils.FieldsUtils;
 
@@ -97,7 +96,7 @@ public class EmbeddedDtoEntityConverter<D> extends BasicDtoEntityConverter<D> im
         return ent;
     }
 
-
+    @Override
     public <T> D toDto(T entity, D dto) {
 
         dto = super.toDto(entity, dto);
